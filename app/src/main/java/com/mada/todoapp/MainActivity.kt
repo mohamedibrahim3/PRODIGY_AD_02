@@ -1,4 +1,5 @@
 package com.mada.todoapp
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,11 +13,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mada.todoapp.data.data_source.database.TaskDatabase
 import com.mada.todoapp.domain.repo.TaskRepoImpl
+import com.mada.todoapp.presentation.screen.DescriptionScreen
 import com.mada.todoapp.presentation.screen.TodoListScreen
 import com.mada.todoapp.presentation.viewmodel.TaskViewModel
 import com.mada.todoapp.presentation.viewmodel.TaskViewModelFactory
@@ -49,11 +55,9 @@ class MainActivity : ComponentActivity() {
                         TopAppBar(
                             title = { Text("Todo List") },
                             actions = {
-
                                 IconButton(onClick = {
-
-                                    println("Add Task clicked!")
-
+                                    // Navigate to DescriptionScreen for adding new task
+                                    navController.navigate("description_screen")
                                 }) {
                                     Icon(Icons.Filled.Add, contentDescription = "Add Task")
                                 }
@@ -61,22 +65,52 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     content = { paddingValues ->
-                        TodoListScreen(
-                            modifier = Modifier.padding(paddingValues),
-                            taskViewModel = taskViewModel,
-                            onTaskClick = { task ->
-
-                            },
-                            onAddClick = {
-                                // Handle the add button click
-
-                                println("Add task clicked from TodoListScreen")
+                        // Navigation host that handles all screen transitions
+                        NavHost(
+                            navController = navController,  // The controller for navigation
+                            startDestination = "todo_list_screen",  // Starting screen
+                            modifier = Modifier.padding(paddingValues)
+                        ) {
+                            // Screen that lists all tasks
+                            composable("todo_list_screen") {
+                                TodoListScreen(
+                                    taskViewModel = taskViewModel,
+                                    onTaskClick = { task ->
+                                        // Navigate to DescriptionScreen to edit the selected task
+                                        navController.navigate("description_screen/${task.id}")
+                                    },
+                                    onAddClick = {
+                                        // Navigate to DescriptionScreen to add a new task
+                                        navController.navigate("description_screen")
+                                    }
+                                )
                             }
-                        )
+                            // Screen to add or edit a task
+                            composable("description_screen") {
+                                DescriptionScreen(
+                                    navController = navController,
+                                    taskViewModel = taskViewModel
+                                )
+                            }
+                            // Screen for editing a specific task (using task ID)
+                            composable("description_screen/{taskId}") { backStackEntry ->
+                                val taskId = backStackEntry.arguments?.getString("taskId")?.toIntOrNull()
+                                taskId?.let {
+                                    taskViewModel.getTaskById(it) // الحصول على المهمة
+                                }
+
+                                val taskToEdit by taskViewModel.task.collectAsState() // جمع القيمة من الـ StateFlow
+
+                                DescriptionScreen(
+                                    navController = navController,
+                                    taskViewModel = taskViewModel,
+                                    taskToEdit = taskToEdit
+                                )
+                            }
+                        }
                     }
                 )
             }
         }
     }
 }
-

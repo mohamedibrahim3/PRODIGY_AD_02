@@ -8,6 +8,7 @@ import androidx.room.Query
 @Dao
 interface TaskDao {
 
+
     @Insert
     suspend fun insertTask(task: TaskEntity):Long
 
@@ -19,4 +20,7 @@ interface TaskDao {
 
     @Query("SELECT * FROM Tasks")
     suspend fun getAllTasks(): List<TaskEntity>
+
+    @Query("SELECT * FROM Tasks WHERE id = :id LIMIT 1")
+    suspend fun getTaskById(id: Int): TaskEntity?
 }

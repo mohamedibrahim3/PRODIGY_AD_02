@@ -1,10 +1,8 @@
 package com.mada.todoapp.presentation.screen
 
-import android.icu.text.CaseMap.Title
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,28 +35,14 @@ fun TodoListScreen(
     onAddClick: () -> Unit  // Accepting onAddClick as a parameter
 ) {
     val tasks by taskViewModel.tasks.collectAsState()
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Todo List") },
-                actions = {
-                    // Add an "Add" button to the TopAppBar
-                    IconButton(onClick = onAddClick) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add Task")
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            LazyColumn(
-                modifier = Modifier.padding(paddingValues) // Apply padding here
-            ) {
-                items(tasks) { task ->
-                    TaskItem(task = task, onTaskClick = onTaskClick, taskViewModel)
-                }
-            }
+
+    LazyColumn(
+        modifier = Modifier.padding(8.dp) // Apply padding here
+    ) {
+        items(tasks) { task ->
+            TaskItem(task = task, onTaskClick = onTaskClick, taskViewModel)
         }
-    )
+    }
 }
 
 
@@ -67,7 +51,7 @@ fun TaskItem(
     task: TaskEntity,
     onTaskClick: (TaskEntity) -> Unit,
     taskViewModel: TaskViewModel
-    ){
+){
     Card(
         modifier = Modifier
             .fillMaxWidth()
