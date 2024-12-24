@@ -2,6 +2,7 @@ package com.mada.todoapp.presentation.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mada.todoapp.data.data_source.database.TaskEntity
 import com.mada.todoapp.presentation.viewmodel.TaskViewModel
 
@@ -62,10 +64,16 @@ fun TaskItem(
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = task.title,
-                modifier = Modifier.weight(1f)
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = task.title,
+                    fontSize = 22.sp
+                )
+                Text(
+                    text = task.description,
+                    fontSize = 16.sp
+                )
+            }
             IconButton(onClick = { taskViewModel.deleteTask(task) }) {
                 Icon(Icons.Filled.Delete, contentDescription = "Delete Task")
             }
