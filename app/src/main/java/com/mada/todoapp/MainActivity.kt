@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text("Todo List") },
+                            title = { Text("Notes") },
                             actions = {
                                 IconButton(onClick = {
                                     // Navigate to DescriptionScreen for adding new task

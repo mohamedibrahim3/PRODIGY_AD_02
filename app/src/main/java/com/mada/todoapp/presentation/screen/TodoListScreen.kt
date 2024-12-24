@@ -62,7 +62,10 @@ fun TaskItem(
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = task.title)
+            Text(
+                text = task.title,
+                modifier = Modifier.weight(1f)
+            )
             IconButton(onClick = { taskViewModel.deleteTask(task) }) {
                 Icon(Icons.Filled.Delete, contentDescription = "Delete Task")
             }
