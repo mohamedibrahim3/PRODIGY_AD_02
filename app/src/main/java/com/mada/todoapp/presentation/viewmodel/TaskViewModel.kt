@@ -17,17 +17,19 @@ class TaskViewModel(private val taskRepo: TaskRepoImpl) : ViewModel() {
 
     private val _task = MutableStateFlow<TaskEntity?>(null)  // StateFlow to hold a specific task
     val task: StateFlow<TaskEntity?> = _task
-
-    fun getTaskById(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val taskEntity = taskRepo.getTaskById(id)
-            _task.value = taskEntity  // Update the StateFlow with the task value
-        }
+    init {
+        getAllTasks() // تحميل المهام عند بداية إنشاء الـ ViewModel
     }
 
     fun getAllTasks() {
         viewModelScope.launch(Dispatchers.IO) {
             _tasks.value = taskRepo.getAllTasks()
+        }
+    }
+    fun getTaskById(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val taskEntity = taskRepo.getTaskById(id)
+            _task.value = taskEntity  // Update the StateFlow with the task value
         }
     }
 
